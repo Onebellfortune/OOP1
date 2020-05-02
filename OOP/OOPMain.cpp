@@ -4,13 +4,40 @@
 
 using namespace std;
 
-typedef struct _account {
+class Account {
+private:
 	int account;
-	char name[20];
+	char* name;
 	int balance;
-}Account;
+public:
+	Account(int aname, char* pname, int money)
+	: account(aname),balance(money){
+		int len = strlen(pname) + 1;
+		name = new char[len];
+		strcpy(name, pname);
+	}
 
-typedef struct _accList {
+	void Deposit(int money) {
+		balance += money;
+	}
+	
+	void Withdraw(int money) {
+		balance -= money;
+	}
+
+	void showAccountInfo() const {
+		cout << "계좌번호: " << account << endl;
+		cout << "이름: " << name << endl;
+		cout << "잔액: " << balance << endl;
+	}
+
+	~Account() {
+		delete[]name;
+	}
+};
+
+
+/*typedef struct _accList {
 	int numOfData;
 	Account accArr[ARR_SIZE];
 }accList;
@@ -52,12 +79,14 @@ void SearchBalance(List* accList) {
 	for (int i = 0; i < num; i++) {
 		cout << accList->accArr[i].name << " 의 잔액: " << accList->accArr[i].balance << endl;
 	}
-}
+}*/
 
 int main(void) {
-	List newAccount;
-	InitAcc(&newAccount);
+	//List newAccount;
+	//InitAcc(&newAccount);
+	Account* accList[20];
 	int input = -1;
+	int i = 0;
 	while (1) {
 		cout << "1: 계좌  개설" << endl;
 		cout << "2: 입금" << endl;
@@ -76,7 +105,9 @@ int main(void) {
 			cin >> name;
 			cout << "금액: ";
 			cin >> money;
-			MakeAccount(&newAccount, num, name, money);
+			accList[i] =new Account(num, name, money);
+			i++;
+			//MakeAccount(&newAccount, num, name, money);
 		}
 		else if (2 == input) {
 			int num;
@@ -85,7 +116,7 @@ int main(void) {
 			cin >> num;
 			cout << "금액: ";
 			cin >> money;
-			Deposit(&newAccount, money, num);
+			accList[num]->Deposit(money);
 		}
 		else if (3 == input) {
 			int num;
@@ -94,11 +125,14 @@ int main(void) {
 			cin >> num;
 			cout << "금액: ";
 			cin >> money;
-			Withdraw(&newAccount, money, num);
+			accList[num]->Withdraw(money);
 		}
 		else if (4 == input) {
 			cout << "--계좌 정보--" << endl;
-			SearchBalance(&newAccount);
+			for (int j = 0; j < i; j++) {
+				accList[j]->showAccountInfo();
+			}
+			//SearchBalance(&newAccount);
 		
 		}else if(5==input){
 			break;
